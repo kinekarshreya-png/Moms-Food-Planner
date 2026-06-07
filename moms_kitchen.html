@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Mom's Kitchen 🍱</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8520A;
+  --primary-light: #FF7A3D;
+  --primary-pale: #FFF0E8;
+  --gold: #F5A623;
+  --green: #27A86A;
+  --green-pale: #E8F8F0;
+  --red: #E53935;
+  --red-pale: #FFEBEE;
+  --yellow-pale: #FFFDE7;
+  --bg: #FBF6F0;
+  --card: #FFFFFF;
+  --text: #2C1810;
+  --text2: #7A5C4A;
+  --text3: #B8967A;
+  --border: #F0E0D0;
+  --shadow2: 0 2px 10px rgba(0,0,0,0.06);
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:90px;
+  overflow-x:hidden;
+}
+
+/* ── HEADER ── */
+.header {
+  background:linear-gradient(135deg,#E8520A 0%,#F5732A 50%,#F5A623 100%);
+  padding:24px 20px 32px;
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+}
+.hblob { position:absolute; border-radius:50%; background:rgba(255,255,255,0.09); }
+.hb1 { width:160px;height:160px; top:-50px;right:-50px; }
+.hb2 { width:100px;height:100px; bottom:-30px;left:-20px; }
+.hb3 { width:70px;height:70px; top:30px;left:35%; }
+.h-inner { position:relative;z-index:1; }
+.h-row { display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px; }
+.h-title { font-size:28px;font-weight:900;color:white;letter-spacing:-0.5px; }
+.h-sub { color:rgba(255,255,255,0.88);font-size:14px;font-weight:600; }
+.date-pill {
+  margin-top:12px;
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,0.22);
+  border:1px solid rgba(255,255,255,0.32);
+  border-radius:30px;padding:8px 20px;
+  font-size:14px;font-weight:700;color:white;
+  backdrop-filter:blur(6px);
+}
+
+/* ── BOTTOM NAV ── */
+.bnav {
+  position:fixed;bottom:0;left:0;right:0;
+  background:white;
+  border-top:2px solid var(--border);
+  display:flex;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.08);
+  z-index:200;
+}
+@media(min-width:520px){
+  .bnav{left:50%;transform:translateX(-50%);width:520px;border-radius:20px 20px 0 0;}
+}
+.nbtn {
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:10px 4px 13px;
+  border:none;background:none;cursor:pointer;
+  color:#B8967A;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;
+  position:relative;transition:color 0.2s;
+}
+.nbtn .ni { font-size:22px;line-height:1;margin-bottom:3px;display:block;transition:transform 0.2s; }
+.nbtn.active { color:var(--primary); }
+.nbtn.active .ni { transform:scale(1.18); }
+.nbtn.active::after {
+  content:'';position:absolute;bottom:0;left:18%;right:18%;
+  height:3px;background:var(--primary);border-radius:3px 3px 0 0;
+}
+
+/* ── PAGES ── */
+.main { padding:14px 14px 0; max-width:520px;margin:0 auto; }
+.page { display:none;animation:fadeUp 0.22s ease; }
+.page.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── CARD ── */
+.card {
+  background:var(--card);
+  border-radius:var(--radius);
+  margin-bottom:14px;
+  overflow:hidden;
+  box-shadow:var(--shadow2);
+  border:1.5px solid var(--border);
+}
+
+/* ── PAGE TITLE ── */
+.pg-title {
+  display:flex;align-items:center;gap:10px;
+  font-size:21px;font-weight:900;color:var(--text);
+  margin-bottom:14px;
+}
+.pg-title .pti {
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+
+/* ══════════════════════════════════════
+   TODAY PAGE
+══════════════════════════════════════ */
+.meal-head {
+  display:flex;align-items:center;gap:12px;
+  padding:15px 16px;cursor:pointer;
+}
+.meal-icon-box {
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+}
+.mib-b{background:#FFF3E0;} .mib-l{background:#FBE9E7;} .mib-d{background:#EDE7F6;}
+.meal-info { flex:1; }
+.meal-name { font-size:18px;font-weight:900;color:var(--text);line-height:1.2; }
+.meal-meta { font-size:12px;color:var(--text3);font-weight:600;margin-top:2px; }
+.chev {
+  width:32px;height:32px;border-radius:50%;
+  background:var(--primary-pale);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--primary);
+  flex-shrink:0;transition:transform 0.25s;
+}
+.meal-head.open .chev { transform:rotate(180deg); }
+
+.prog-wrap { padding:0 16px 2px; }
+.prog-top { display:flex;justify-content:space-between;margin-bottom:5px; }
+.prog-lbl { font-size:12px;color:var(--text3);font-weight:700; }
+.prog-bar { height:6px;background:#F0E8E0;border-radius:6px;overflow:hidden; }
+.prog-fill { height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green),#50E39A);transition:width 0.5s; }
+
+.food-list { padding:6px 10px 12px; }
+.food-row {
+  display:flex;align-items:center;gap:10px;
+  padding:11px 10px;border-radius:var(--radius-sm);
+  cursor:pointer;margin-bottom:3px;
+  border:1.5px solid transparent;transition:all 0.15s;
+}
+.food-row:active{transform:scale(0.98);}
+.f-normal:hover { background:var(--primary-pale); }
+.f-done  { background:var(--green-pale);border-color:#C3EDD5; }
+.f-warn  { background:var(--yellow-pale);border-color:#FFE082; }
+.f-max   { background:var(--red-pale);border-color:#FFCDD2;opacity:0.72; }
+
+.fcheck {
+  width:28px;height:28px;border-radius:8px;
+  border:2px solid #D8C0B0;background:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;color:white;
+  flex-shrink:0;transition:all 0.18s;
+}
+.f-done .fcheck { background:var(--green);border-color:var(--green); }
+.f-warn .fcheck { background:var(--gold);border-color:var(--gold); }
+.f-max  .fcheck { background:#C8C8C8;border-color:#C8C8C8; }
+.fname { flex:1;font-size:15px;font-weight:700; }
+.f-max .fname { color:#ABABAB;text-decoration:line-through; }
+.fbadge {
+  font-size:11px;font-weight:800;padding:3px 9px;
+  border-radius:20px;flex-shrink:0;
+}
+.bd-n{background:#F0E8E0;color:var(--text3);}
+.bd-d{background:#C3EDD5;color:#1A7A4A;}
+.bd-w{background:#FFE082;color:#7A5500;}
+.bd-m{background:#FFCDD2;color:#C62828;}
+
+/* ══════════════════════════════════════
+   SUGGEST PAGE
+══════════════════════════════════════ */
+.sug-card { background:var(--card);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow2);border:1.5px solid var(--border); }
+.sug-head { display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1.5px solid var(--border); }
+.sug-head-icon { font-size:26px; }
+.sug-head-title { font-size:17px;font-weight:900; }
+.sug-body { padding:14px; }
+.sug-section-lbl { font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3);margin-bottom:8px; }
+.chips { display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px; }
+.chip {
+  padding:8px 15px;border-radius:30px;
+  font-size:13px;font-weight:700;
+  cursor:pointer;transition:all 0.15s;
+}
+.chip-make { background:var(--green-pale);color:#1A7A4A;border:1.5px solid #B0E8CC; }
+.chip-make:active { background:#B0E8CC;transform:scale(0.96); }
+.chip-avoid { background:var(--yellow-pale);color:#7A5500;border:1.5px dashed #FFE082;cursor:default; }
+.no-chip { font-size:13px;color:var(--text3);font-style:italic;padding:2px 0; }
+
+/* ══════════════════════════════════════
+   MONTHLY PAGE
+══════════════════════════════════════ */
+.mnav {
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--card);border-radius:var(--radius-sm);
+  padding:10px 8px;margin-bottom:12px;
+  box-shadow:var(--shadow2);border:1.5px solid var(--border);
+}
+.mnav-btn {
+  width:40px;height:40px;border-radius:50%;border:none;
+  background:var(--primary-pale);color:var(--primary);
+  font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s;
+}
+.mnav-btn:active{background:var(--primary);color:white;}
+.mnav-lbl { font-size:18px;font-weight:900; }
+
+.cal-wrap { background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow2);border:1.5px solid var(--border);margin-bottom:14px; }
+.cal-hrow { display:grid;grid-template-columns:repeat(7,1fr);background:var(--primary); }
+.cal-wd { text-align:center;padding:9px 0;font-size:11px;font-weight:800;color:rgba(255,255,255,0.92); }
+.cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border); }
+.cal-cell { background:var(--card);min-height:52px;padding:5px 4px;cursor:pointer;transition:background 0.15s; }
+.cal-cell:hover{background:var(--primary-pale);}
+.cal-cell.c-today{background:#FFF3EC;}
+.cal-cell.c-empty{background:#FAFAF8;cursor:default;}
+.cal-num { font-size:12px;font-weight:700;line-height:1.2; }
+.cal-cell.c-empty .cal-num{color:#CCC;}
+.cal-cell.c-today .cal-num {
+  background:var(--primary);color:white;
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.dots { display:flex;gap:2px;flex-wrap:wrap;margin-top:3px; }
+.dot { width:6px;height:6px;border-radius:50%; }
+.db{background:#FF9800;} .dl{background:var(--primary);} .dd{background:#7C4DFF;}
+
+/* month summary */
+.sum-card { background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow2);border:1.5px solid var(--border);margin-bottom:12px; }
+.sum-head { padding:12px 16px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px; }
+.sum-head-title { font-size:16px;font-weight:900; }
+.sum-row { display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid #FAF0E8;gap:10px; }
+.sum-row:last-child{border-bottom:none;}
+.sum-ct {
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;flex-shrink:0;
+}
+.sc-ok{background:var(--green-pale);color:var(--green);}
+.sc-w{background:var(--yellow-pale);color:#7A5500;}
+.sc-m{background:var(--red-pale);color:var(--red);}
+.sum-name{flex:1;font-size:14px;font-weight:700;}
+.sum-bar-wrap{width:70px;background:#F0E8E0;border-radius:4px;height:5px;}
+.sum-bar-fill{height:100%;border-radius:4px;background:var(--primary);}
+
+/* ══════════════════════════════════════
+   MANAGE PAGE
+══════════════════════════════════════ */
+.mcat { background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow2);border:1.5px solid var(--border);margin-bottom:14px; }
+.mcat-head { padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1.5px solid var(--border); }
+.mcat-icon { font-size:24px; }
+.mcat-title { font-size:17px;font-weight:900;flex:1; }
+.mcat-count { font-size:12px;color:var(--text3);font-weight:700; }
+.add-row { display:flex;gap:8px;padding:12px 14px;border-bottom:1.5px solid var(--border); }
+.add-inp {
+  flex:1;padding:11px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;
+  color:var(--text);background:var(--bg);outline:none;transition:border-color 0.2s;
+}
+.add-inp:focus{border-color:var(--primary);background:white;}
+.add-inp::placeholder{color:var(--text3);}
+.add-btn {
+  padding:11px 16px;background:var(--primary);color:white;border:none;
+  border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;
+  font-size:15px;font-weight:800;cursor:pointer;white-space:nowrap;
+}
+.add-btn:active{background:var(--primary-light);}
+.mitem { display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);gap:10px;transition:background 0.15s; }
+.mitem:last-child{border-bottom:none;}
+.mitem:hover{background:var(--primary-pale);}
+.mitem-name{flex:1;font-size:15px;font-weight:700;}
+.edit-inp {
+  flex:1;padding:8px 12px;border:2px solid var(--primary);border-radius:10px;
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;outline:none;
+}
+.ibtn {
+  width:34px;height:34px;border-radius:10px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  flex-shrink:0;transition:all 0.15s;
+}
+.ib-edit{background:#EEF2FF;} .ib-edit:hover{background:#C7D2FE;}
+.ib-del{background:var(--red-pale);} .ib-del:hover{background:#FFCDD2;}
+.ib-save{background:var(--green);color:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;padding:8px 12px;width:auto;border-radius:10px;}
+.ib-cancel{background:#EEE;color:#888;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;padding:8px 10px;width:auto;border-radius:10px;}
+
+/* ══════════════════════════════════════
+   SHARE PAGE
+══════════════════════════════════════ */
+.share-btn {
+  width:100%;padding:16px;border:none;border-radius:var(--radius-sm);
+  font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;
+  cursor:pointer;margin-bottom:10px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all 0.15s;
+}
+.share-btn:active{transform:scale(0.98);}
+.sbtn-wa{background:#25D366;color:white;box-shadow:0 4px 14px rgba(37,211,102,0.28);}
+.sbtn-copy{background:var(--text);color:white;box-shadow:0 4px 14px rgba(0,0,0,0.14);}
+.stats-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:10px;}
+.stats-row:last-child{border-bottom:none;}
+.stats-name{flex:1;font-size:14px;font-weight:700;}
+.stats-ct{font-size:12px;font-weight:800;color:var(--text3);min-width:28px;text-align:right;}
+.stats-bar{width:80px;background:#F0E0D0;border-radius:4px;height:6px;}
+.stats-fill{height:100%;border-radius:4px;background:var(--primary);}
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.44);z-index:300;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;animation:fi 0.2s;}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.bsheet {
+  background:white;width:100%;max-width:520px;
+  border-radius:24px 24px 0 0;padding:20px 18px 36px;
+  max-height:80vh;overflow-y:auto;
+  animation:su 0.25s ease;
+}
+@keyframes su{from{transform:translateY(40px)}to{transform:translateY(0)}}
+.bhandle{width:44px;height:5px;background:#E0D0C8;border-radius:3px;margin:0 auto 18px;}
+.bsheet-title{font-size:20px;font-weight:900;margin-bottom:16px;}
+.bmeal{margin-bottom:14px;}
+.bmeal-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:7px;}
+.bmeal-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.bmeal-chip{background:var(--primary-pale);color:var(--primary);padding:7px 14px;border-radius:20px;font-size:14px;font-weight:700;}
+.bclose{width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px;}
+
+.conf-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.48);z-index:400;align-items:center;justify-content:center;padding:20px;}
+.conf-overlay.open{display:flex;animation:fi 0.2s;}
+.conf-box{background:white;border-radius:24px;padding:28px 22px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.18);}
+.conf-em{font-size:48px;margin-bottom:10px;}
+.conf-title{font-size:20px;font-weight:900;margin-bottom:8px;}
+.conf-msg{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:22px;}
+.conf-btns{display:flex;gap:10px;}
+.cbtn{flex:1;padding:14px;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;}
+.cbtn-yes{background:var(--primary);color:white;}
+.cbtn-no{background:#F0E8E0;color:var(--text2);}
+
+/* ── TOAST ── */
+.toast {
+  position:fixed;bottom:88px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--text);color:white;
+  padding:12px 22px;border-radius:30px;
+  font-size:14px;font-weight:700;
+  z-index:500;opacity:0;pointer-events:none;
+  transition:all 0.3s;white-space:nowrap;
+  max-width:88vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.t-green{background:var(--green);}
+.t-warn{background:#7A5500;}
+.t-red{background:var(--red);}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:28px 16px;}
+.empty-ico{font-size:44px;display:block;margin-bottom:8px;}
+.empty-txt{font-size:14px;color:var(--text3);font-weight:600;}
+
+/* ── COLOR LEGEND (monthly) ── */
+.legend {
+  display:flex;gap:14px;justify-content:center;
+  background:var(--card);border-radius:var(--radius-sm);
+  padding:10px 16px;margin-bottom:12px;
+  box-shadow:var(--shadow2);border:1.5px solid var(--border);
+  flex-wrap:wrap;
+}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--text2);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="hblob hb1"></div>
+  <div class="hblob hb2"></div>
+  <div class="hblob hb3"></div>
+  <div class="h-inner">
+    <div class="h-row">
+      <span style="font-size:32px">🍱</span>
+      <h1 class="h-title">Mom's Kitchen</h1>
+    </div>
+    <div class="h-sub">Plan your day, cook with joy ✨</div>
+    <div class="date-pill">
+      <span>📅</span>
+      <span id="todayDisplay">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="main">
+
+  <!-- TODAY -->
+  <div class="page active" id="page-today">
+    <div id="today-content"></div>
+  </div>
+
+  <!-- SUGGEST -->
+  <div class="page" id="page-suggest">
+    <div class="pg-title">
+      <div class="pti" style="background:#FFF8E8">💡</div>
+      What to Make Today?
+    </div>
+    <div id="suggest-content"></div>
+  </div>
+
+  <!-- MONTHLY -->
+  <div class="page" id="page-monthly">
+    <div class="mnav">
+      <button class="mnav-btn" onclick="changeMonth(-1)">‹</button>
+      <span class="mnav-lbl" id="monthLabel"></span>
+      <button class="mnav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="legend">
+      <div class="leg-item"><div class="dot db" style="width:10px;height:10px"></div> Breakfast</div>
+      <div class="leg-item"><div class="dot dl" style="width:10px;height:10px"></div> Lunch</div>
+      <div class="leg-item"><div class="dot dd" style="width:10px;height:10px"></div> Dinner</div>
+    </div>
+    <div class="cal-wrap">
+      <div class="cal-hrow">
+        <div class="cal-wd">Sun</div><div class="cal-wd">Mon</div><div class="cal-wd">Tue</div>
+        <div class="cal-wd">Wed</div><div class="cal-wd">Thu</div><div class="cal-wd">Fri</div>
+        <div class="cal-wd">Sat</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div id="monthSummary"></div>
+  </div>
+
+  <!-- MANAGE -->
+  <div class="page" id="page-manage">
+    <div class="pg-title">
+      <div class="pti" style="background:#EEF2FF">✏️</div>
+      Manage Dishes
+    </div>
+    <div style="background:#FFF8E8;border:1.5px solid #FFE082;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;font-size:13px;color:#7A5500;font-weight:600;line-height:1.6;">
+      💡 <strong>Tip:</strong> Tap ✏️ to fix spelling mistakes. Tap 🗑️ to remove a dish. Type and tap <strong>+ Add</strong> to add new dishes!
+    </div>
+    <div id="manage-content"></div>
+  </div>
+
+  <!-- SHARE -->
+  <div class="page" id="page-share">
+    <div class="pg-title">
+      <div class="pti" style="background:#E8F8F0">📤</div>
+      Share Menu
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="font-size:14px;color:var(--text2);font-weight:600;margin-bottom:16px;line-height:1.6;">
+        Share this month's full meal plan with family in one tap! 👨‍👩‍👧
+      </div>
+      <button class="share-btn sbtn-wa" onclick="shareWhatsApp()">
+        <span>💬</span> Send on WhatsApp
+      </button>
+      <button class="share-btn sbtn-copy" onclick="copyText()">
+        <span>📋</span> Copy to Clipboard
+      </button>
+    </div>
+    <div class="card">
+      <div style="padding:14px 16px 4px;font-size:17px;font-weight:900;">📊 This Month's Top Dishes</div>
+      <div style="padding:4px 16px 16px;" id="statsBody"></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="nbtn active" id="nav-today"   onclick="switchTab('today')">
+    <span class="ni">🌅</span>Today
+  </button>
+  <button class="nbtn" id="nav-suggest"  onclick="switchTab('suggest')">
+    <span class="ni">💡</span>Suggest
+  </button>
+  <button class="nbtn" id="nav-monthly"  onclick="switchTab('monthly')">
+    <span class="ni">📅</span>Monthly
+  </button>
+  <button class="nbtn" id="nav-manage"   onclick="switchTab('manage')">
+    <span class="ni">✏️</span>Manage
+  </button>
+  <button class="nbtn" id="nav-share"    onclick="switchTab('share')">
+    <span class="ni">📤</span>Share
+  </button>
+</div>
+
+<!-- DAY DETAIL SHEET -->
+<div class="overlay" id="dayOverlay">
+  <div class="bsheet">
+    <div class="bhandle"></div>
+    <div class="bsheet-title" id="sheetTitle"></div>
+    <div id="sheetBody"></div>
+    <button class="bclose" onclick="closeSheet()">✕ Close</button>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="conf-overlay" id="confOvl">
+  <div class="conf-box">
+    <div class="conf-em" id="cEm">⚠️</div>
+    <div class="conf-title" id="cTitle"></div>
+    <div class="conf-msg" id="cMsg"></div>
+    <div class="conf-btns">
+      <button class="cbtn cbtn-no"  onclick="confNo()">No, Skip</button>
+      <button class="cbtn cbtn-yes" onclick="confYes()">Yes, Add!</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════
+   CONSTANTS & DATA
+════════════════════════════════════════ */
+const DEFAULT_FOODS = {
+  breakfast: ['Poha','Rava Upma','Appe','Rava Dosa','Kurmure','Dosa','Idli','Shevrya','Khichdi','Chana Usal'],
+  lunch:     ['Pav Bhaji','Vada Pav','Misal Pav','Paneer Bhurji','Paneer Butter Masala','Paneer Pulav',
+              'Soyabean Pulav','Soyabean Keema','Soyabean Rassa','Anda Bhurji','Batata Bhaji',
+              'Shimla Karli','Karle','Ahendli','Veg Biryani','Aloo Paratha','Puri Bhaji',
+              'Chola Puri','Omelette Chapati','Moodles','Fried Rice'],
+  dinner:    ['Varan Bhat','Khichdi','Sambhar Masala Khichdi','Shengdana Sur Bhat','Pulav Paneer',
+              'Soyabean Pulav','Veg Biryani','Anda Bhurji','Batata Karli','Aloo Paratha','Fried Idli']
+};
+
+const MCFG = {
+  breakfast: { label:'Breakfast',   sub:'Morning ☕',   icon:'🌅', em:'🥞', max:3, ibc:'mib-b' },
+  lunch:     { label:'Lunch',       sub:'Afternoon ☀️', icon:'☀️', em:'🍛', max:2, ibc:'mib-l' },
+  dinner:    { label:'Dinner',      sub:'Night 🌙',     icon:'🌙', em:'🍲', max:2, ibc:'mib-d' }
+};
+
+const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAYS_S    = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+/* ════════════════════════════════════════
+   STORAGE
+════════════════════════════════════════ */
+const getFoods  = () => { try { return JSON.parse(localStorage.getItem('mk_foods') || 'null') || JSON.parse(JSON.stringify(DEFAULT_FOODS)); } catch { return JSON.parse(JSON.stringify(DEFAULT_FOODS)); } };
+const saveFoods = d  => localStorage.setItem('mk_foods', JSON.stringify(d));
+const getLog    = () => { try { return JSON.parse(localStorage.getItem('mk_log') || '{}'); } catch { return {}; } };
+const saveLog   = l  => localStorage.setItem('mk_log', JSON.stringify(l));
+
+const p2        = n  => String(n).padStart(2,'0');
+const todayStr  = () => { const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; };
+const mPfx      = (y,m) => `${y}-${p2(m+1)}`;
+
+function countMonth(mt, food, y, m) {
+  const log=getLog(), pfx=mPfx(y,m); let c=0;
+  for (const k in log) if(k.startsWith(pfx)&&(log[k][mt]||[]).includes(food)) c++;
+  return c;
+}
+
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+let vY=new Date().getFullYear(), vM=new Date().getMonth(), confCb=null;
+
+function switchTab(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if(name==='monthly') renderCal();
+  if(name==='suggest') renderSuggest();
+  if(name==='share')   renderStats();
+  if(name==='manage')  renderManage();
+}
+
+/* ════════════════════════════════════════
+   TODAY PAGE
+════════════════════════════════════════ */
+function renderToday() {
+  const ds=todayStr(), log=getLog();
+  const dd=log[ds]||{breakfast:[],lunch:[],dinner:[]};
+  const now=new Date(), Y=now.getFullYear(), Mo=now.getMonth();
+  const foods=getFoods();
+  let html='';
+
+  for (const mt of ['breakfast','lunch','dinner']) {
+    const cfg=MCFG[mt], items=foods[mt]||[], sel=dd[mt]||[];
+    const untried=items.filter(f=>countMonth(mt,f,Y,Mo)===0).length;
+    const pct=items.length?Math.round(((items.length-untried)/items.length)*100):0;
+
+    let rows='';
+    for (const food of items) {
+      const cnt=countMonth(mt,food,Y,Mo), done=sel.includes(food);
+      const isMax=!done&&cnt>=cfg.max, isWarn=!done&&cnt===cfg.max-1;
+      const cls=done?'f-done':isMax?'f-max':isWarn?'f-warn':'f-normal';
+      const chk=done?'✓':isMax?'✕':'';
+      const bCls=done?'bd-d':isMax?'bd-m':isWarn?'bd-w':'bd-n';
+      const bTxt=isMax?'Max ✗':cnt>0?`${cnt}×`:'';
+      rows+=`<div class="food-row ${cls}" onclick="toggleFood('${mt}','${esc(food)}')">
+        <div class="fcheck">${chk}</div>
+        <span class="fname">${food}</span>
+        ${bTxt?`<span class="fbadge ${bCls}">${bTxt}</span>`:''}
+      </div>`;
+    }
+
+    html+=`<div class="card">
+      <div class="meal-head open" id="mh-${mt}" onclick="toggleSec('${mt}')">
+        <div class="meal-icon-box ${cfg.ibc}">${cfg.em}</div>
+        <div class="meal-info">
+          <div class="meal-name">${cfg.label}</div>
+          <div class="meal-meta">${cfg.sub} · ${sel.length} ticked today</div>
+        </div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="prog-wrap" id="pw-${mt}">
+        <div class="prog-top">
+          <span class="prog-lbl">${items.length-untried} of ${items.length} dishes made this month</span>
+          <span class="prog-lbl">${pct}%</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="food-list" id="fl-${mt}">${rows}</div>
+    </div>`;
+  }
+  document.getElementById('today-content').innerHTML=html;
+}
+
+function toggleSec(mt) {
+  const h=document.getElementById('mh-'+mt);
+  const pw=document.getElementById('pw-'+mt);
+  const fl=document.getElementById('fl-'+mt);
+  h.classList.toggle('open');
+  const open=h.classList.contains('open');
+  pw.style.display=open?'':'none';
+  fl.style.display=open?'':'none';
+}
+
+function toggleFood(mt, food) {
+  const ds=todayStr(), now=new Date(), Y=now.getFullYear(), Mo=now.getMonth();
+  const log=getLog(), dd=log[ds]||{breakfast:[],lunch:[],dinner:[]};
+  const sel=dd[mt]||[];
+  const idx=sel.indexOf(food);
+
+  if(idx>=0){ sel.splice(idx,1); dd[mt]=sel; log[ds]=dd; saveLog(log); renderToday(); return; }
+
+  // count excluding today
+  const pfx=mPfx(Y,Mo); let cntEx=0;
+  for(const k in log) if(k.startsWith(pfx)&&k!==ds&&(log[k][mt]||[]).includes(food)) cntEx++;
+  const newCnt=cntEx+1, max=MCFG[mt].max;
+
+  const doAdd=()=>{ sel.push(food); dd[mt]=sel; log[ds]=dd; saveLog(log); renderToday(); };
+
+  if(newCnt>max){
+    confCb=doAdd;
+    document.getElementById('cEm').textContent='⚠️';
+    document.getElementById('cTitle').textContent=`${food} again?`;
+    document.getElementById('cMsg').textContent=`This will be the ${ord(newCnt)} time making ${food} this month — that's more than the ${max}-time limit. Sure?`;
+    document.getElementById('confOvl').classList.add('open'); return;
+  }
+  if(newCnt===max){
+    confCb=doAdd;
+    document.getElementById('cEm').textContent='🤔';
+    document.getElementById('cTitle').textContent=`${ord(newCnt)} time this month!`;
+    document.getElementById('cMsg').textContent=`${food} will reach its ${max}-time limit for this month. Still want to add it today?`;
+    document.getElementById('confOvl').classList.add('open'); return;
+  }
+  doAdd();
+  toast(`✓ ${food} added!`,'t-green');
+}
+
+function confYes(){ document.getElementById('confOvl').classList.remove('open'); if(confCb){confCb();confCb=null;} }
+function confNo() { document.getElementById('confOvl').classList.remove('open'); confCb=null; }
+
+/* ════════════════════════════════════════
+   SUGGEST PAGE
+════════════════════════════════════════ */
+function renderSuggest() {
+  const now=new Date(), Y=now.getFullYear(), Mo=now.getMonth(), foods=getFoods();
+  let html='';
+  for(const mt of ['breakfast','lunch','dinner']){
+    const cfg=MCFG[mt], items=foods[mt]||[], make=[], avoid=[];
+    for(const f of items){ const c=countMonth(mt,f,Y,Mo); if(c===0)make.push(f); else if(c>=cfg.max-1)avoid.push({f,c}); }
+    const mHtml=make.length
+      ?make.map(f=>`<span class="chip chip-make" onclick="quickAdd('${mt}','${esc(f)}')">+ ${f}</span>`).join('')
+      :`<div class="no-chip">All dishes made at least once this month 🎉</div>`;
+    const aHtml=avoid.length
+      ?avoid.map(({f,c})=>`<span class="chip chip-avoid">${f} (${c}×)</span>`).join('')
+      :`<div class="no-chip">No dishes near the limit yet 👍</div>`;
+    html+=`<div class="sug-card">
+      <div class="sug-head">
+        <span class="sug-head-icon">${cfg.em}</span>
+        <span class="sug-head-title">${cfg.label}</span>
+      </div>
+      <div class="sug-body">
+        <div class="sug-section-lbl">✅ Make these — not made yet this month</div>
+        <div class="chips">${mHtml}</div>
+        <div class="sug-section-lbl">⚠️ Already made 2–3 times — give a break!</div>
+        <div class="chips">${aHtml}</div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('suggest-content').innerHTML=html;
+}
+
+function quickAdd(mt,food){ switchTab('today'); toggleFood(mt,food); }
+
+/* ════════════════════════════════════════
+   MANAGE PAGE
+════════════════════════════════════════ */
+function renderManage() {
+  const foods=getFoods(); let html='';
+  for(const mt of ['breakfast','lunch','dinner']){
+    const cfg=MCFG[mt], items=foods[mt]||[];
+    let rows=items.map((f,i)=>`
+      <div class="mitem" id="mi-${mt}-${i}">
+        <span class="mitem-name">${f}</span>
+        <button class="ibtn ib-edit" onclick="startEdit('${mt}',${i})" title="Edit">✏️</button>
+        <button class="ibtn ib-del"  onclick="delItem('${mt}',${i})"   title="Delete">🗑️</button>
+      </div>`).join('');
+    html+=`<div class="mcat">
+      <div class="mcat-head">
+        <span class="mcat-icon">${cfg.em}</span>
+        <span class="mcat-title">${cfg.label}</span>
+        <span class="mcat-count">${items.length} dishes</span>
+      </div>
+      <div class="add-row">
+        <input class="add-inp" id="ai-${mt}" placeholder="Type new dish name here..."
+          onkeydown="if(event.key==='Enter')addItem('${mt}')">
+        <button class="add-btn" onclick="addItem('${mt}')">+ Add</button>
+      </div>
+      <div id="il-${mt}">${rows}</div>
+    </div>`;
+  }
+  document.getElementById('manage-content').innerHTML=html;
+}
+
+function addItem(mt) {
+  const inp=document.getElementById('ai-'+mt), val=inp.value.trim();
+  if(!val){ toast('Please type a dish name!','t-warn'); return; }
+  const foods=getFoods();
+  if((foods[mt]||[]).some(f=>f.toLowerCase()===val.toLowerCase())){ toast('This dish already exists!','t-warn'); return; }
+  foods[mt].push(val); saveFoods(foods); inp.value='';
+  renderManage(); renderToday();
+  toast(`✓ "${val}" added to ${MCFG[mt].label}!`,'t-green');
+}
+
+function delItem(mt,idx) {
+  const foods=getFoods(), name=foods[mt][idx];
+  if(!confirm(`Remove "${name}" from the list?`)) return;
+  foods[mt].splice(idx,1); saveFoods(foods);
+  renderManage(); renderToday();
+  toast(`Removed "${name}"`);
+}
+
+function startEdit(mt,idx) {
+  const foods=getFoods(), old=foods[mt][idx];
+  const row=document.getElementById(`mi-${mt}-${idx}`);
+  row.innerHTML=`
+    <input class="edit-inp" id="ei-${mt}-${idx}" value="${old}"
+      onkeydown="if(event.key==='Enter')saveEdit('${mt}',${idx})">
+    <button class="ibtn ib-save" onclick="saveEdit('${mt}',${idx})">Save</button>
+    <button class="ibtn ib-cancel" onclick="renderManage()">✕</button>`;
+  document.getElementById(`ei-${mt}-${idx}`).focus();
+}
+
+function saveEdit(mt,idx) {
+  const val=document.getElementById(`ei-${mt}-${idx}`).value.trim();
+  if(!val){ toast('Name cannot be empty','t-warn'); return; }
+  const foods=getFoods(), old=foods[mt][idx];
+  if(old!==val){
+    const log=getLog();
+    for(const k in log){ const a=log[k][mt]; if(a){const i=a.indexOf(old);if(i>=0)a[i]=val;} }
+    saveLog(log);
+  }
+  foods[mt][idx]=val; saveFoods(foods);
+  renderManage(); renderToday();
+  toast(`✓ Renamed to "${val}"`,'t-green');
+}
+
+/* ════════════════════════════════════════
+   MONTHLY CALENDAR
+════════════════════════════════════════ */
+function renderCal() {
+  document.getElementById('monthLabel').textContent=`${MONTHS[vM]} ${vY}`;
+  const first=new Date(vY,vM,1).getDay(), dim=new Date(vY,vM+1,0).getDate();
+  const today=new Date(), log=getLog(), pfx=mPfx(vY,vM);
+  let html='', day=1;
+  const total=Math.ceil((first+dim)/7)*7;
+  for(let i=0;i<total;i++){
+    if(i<first||day>dim){ html+=`<div class="cal-cell c-empty"><div class="cal-num"></div></div>`; if(i>=first)day++; continue; }
+    const ds=`${vY}-${p2(vM+1)}-${p2(day)}`;
+    const isTd=today.getFullYear()===vY&&today.getMonth()===vM&&today.getDate()===day;
+    const dd=log[ds]||{};
+    let dots='';
+    if((dd.breakfast||[]).length) dots+=`<div class="dot db"></div>`;
+    if((dd.lunch||[]).length)     dots+=`<div class="dot dl"></div>`;
+    if((dd.dinner||[]).length)    dots+=`<div class="dot dd"></div>`;
+    html+=`<div class="cal-cell ${isTd?'c-today':''}" onclick="showSheet('${ds}',${day})">
+      <div class="cal-num">${day}</div>
+      <div class="dots">${dots}</div>
+    </div>`;
+    day++;
+  }
+  document.getElementById('calGrid').innerHTML=html;
+  renderMonthSum();
+}
+
+function changeMonth(d){ vM+=d; if(vM>11){vM=0;vY++;} if(vM<0){vM=11;vY--;} renderCal(); }
+
+function renderMonthSum() {
+  const log=getLog(), pfx=mPfx(vY,vM), cts={breakfast:{},lunch:{},dinner:{}};
+  for(const k in log){ if(!k.startsWith(pfx))continue; for(const m of['breakfast','lunch','dinner']) for(const f of(log[k][m]||[])) cts[m][f]=(cts[m][f]||0)+1; }
+  let html='';
+  for(const mt of['breakfast','lunch','dinner']){
+    const cfg=MCFG[mt], entries=Object.entries(cts[mt]).sort((a,b)=>b[1]-a[1]);
+    if(!entries.length)continue;
+    const maxV=entries[0][1]||1;
+    html+=`<div class="sum-card">
+      <div class="sum-head"><span style="font-size:20px">${cfg.em}</span><span class="sum-head-title">${cfg.label} — This Month</span></div>
+      ${entries.map(([f,c])=>{
+        const cls=c>=cfg.max?'sc-m':c===cfg.max-1?'sc-w':'sc-ok';
+        return `<div class="sum-row">
+          <div class="sum-ct ${cls}">${c}</div>
+          <span class="sum-name">${f}</span>
+          <div class="sum-bar-wrap"><div class="sum-bar-fill" style="width:${Math.round(c/maxV*100)}%"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+  document.getElementById('monthSummary').innerHTML=html||`<div class="empty"><span class="empty-ico">📋</span><div class="empty-txt">No meals logged yet for ${MONTHS[vM]}</div></div>`;
+}
+
+/* ════════════════════════════════════════
+   DAY DETAIL SHEET
+════════════════════════════════════════ */
+function showSheet(ds,dayNum) {
+  const log=getLog(), dd=log[ds]||{}, pts=ds.split('-');
+  const d=new Date(+pts[0],+pts[1]-1,+pts[2]);
+  document.getElementById('sheetTitle').textContent=`${DAYS_LONG[d.getDay()]}, ${dayNum} ${MONTHS[+pts[1]-1]}`;
+  let body='';
+  for(const mt of['breakfast','lunch','dinner']){
+    const items=dd[mt]||[];
+    if(!items.length)continue;
+    body+=`<div class="bmeal">
+      <div class="bmeal-lbl">${MCFG[mt].icon} ${MCFG[mt].label}</div>
+      <div class="bmeal-chips">${items.map(f=>`<span class="bmeal-chip">${f}</span>`).join('')}</div>
+    </div>`;
+  }
+  if(!body)body=`<div class="empty"><span class="empty-ico">🍽️</span><div class="empty-txt">Nothing logged for this day</div></div>`;
+  document.getElementById('sheetBody').innerHTML=body;
+  document.getElementById('dayOverlay').classList.add('open');
+}
+function closeSheet(){ document.getElementById('dayOverlay').classList.remove('open'); }
+
+/* ════════════════════════════════════════
+   SHARE
+════════════════════════════════════════ */
+function buildText() {
+  const log=getLog(), pfx=mPfx(vY,vM);
+  let t=`🍱 Mom's Kitchen — ${MONTHS[vM]} ${vY}\n${'─'.repeat(30)}\n\n`;
+  const days=Object.keys(log).filter(k=>k.startsWith(pfx)).sort();
+  if(!days.length)return t+'No meals logged yet!';
+  for(const ds of days){
+    const pts=ds.split('-'), d=new Date(+pts[0],+pts[1]-1,+pts[2]);
+    t+=`📅 ${DAYS_S[d.getDay()]} ${pts[2]} ${MONTHS[+pts[1]-1]}\n`;
+    const dd=log[ds];
+    if((dd.breakfast||[]).length) t+=`  🌅 ${dd.breakfast.join(', ')}\n`;
+    if((dd.lunch||[]).length)     t+=`  ☀️ ${dd.lunch.join(', ')}\n`;
+    if((dd.dinner||[]).length)    t+=`  🌙 ${dd.dinner.join(', ')}\n`;
+    t+='\n';
+  }
+  return t;
+}
+function shareWhatsApp(){ window.open('https://wa.me/?text='+encodeURIComponent(buildText()),'_blank'); }
+function copyText(){
+  const txt=buildText();
+  navigator.clipboard.writeText(txt).then(()=>toast('📋 Copied to clipboard!','t-green')).catch(()=>{
+    const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    toast('📋 Copied!','t-green');
+  });
+}
+
+function renderStats(){
+  const log=getLog(), now=new Date(), pfx=mPfx(now.getFullYear(),now.getMonth()), cts={};
+  for(const k in log){ if(!k.startsWith(pfx))continue; for(const m of['breakfast','lunch','dinner']) for(const f of(log[k][m]||[])) cts[f]=(cts[f]||0)+1; }
+  const sorted=Object.entries(cts).sort((a,b)=>b[1]-a[1]);
+  const maxV=sorted[0]?.[1]||1;
+  document.getElementById('statsBody').innerHTML=sorted.length
+    ?sorted.slice(0,10).map(([f,c])=>`
+        <div class="stats-row">
+          <span class="stats-name">${f}</span>
+          <span class="stats-ct">${c}×</span>
+          <div class="stats-bar"><div class="stats-fill" style="width:${Math.round(c/maxV*100)}%"></div></div>
+        </div>`).join('')
+    :`<div class="empty"><span class="empty-ico">📊</span><div class="empty-txt">No meals logged this month yet</div></div>`;
+}
+
+/* ════════════════════════════════════════
+   UTILS
+════════════════════════════════════════ */
+const ord = n => n===1?'1st':n===2?'2nd':n===3?'3rd':n+'th';
+const esc = s => s.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+
+function toast(msg,cls='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+(cls);
+  setTimeout(()=>t.className='toast',2600);
+}
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+(function(){
+  const now=new Date();
+  document.getElementById('todayDisplay').textContent=
+    `${DAYS_LONG[now.getDay()]}, ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+  vY=now.getFullYear(); vM=now.getMonth();
+  renderToday();
+})();
+</script>
+</body>
+</html>
